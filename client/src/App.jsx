@@ -71,6 +71,13 @@ const App = () => {
           <div>
             <h2>Welcome, {user.username}</h2>
             <div>
+              <button onClick={() => {
+                localStorage.removeItem('token')
+                setUser(null)
+              }
+              }>Logout</button>
+            </div>
+            <div>
               <h3>Available Services</h3>
               {services.map(service => (
                 <div key={service.name}>
