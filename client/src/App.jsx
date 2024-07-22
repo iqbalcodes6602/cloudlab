@@ -52,7 +52,7 @@ const App = () => {
 
   const stopService = async (serviceName, image) => {
     try {
-      await axios.post('http://localhost:5000/api/services/stop', { serviceName });
+      await axios.post('http://localhost:5000/api/services/stop', { userId: user });
       // Update state to hide the button for the specific service
       setServiceStates(prev => ({
         ...prev,

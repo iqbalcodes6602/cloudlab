@@ -37,7 +37,7 @@ const findAvailablePort = async (startPort) => {
 };
 
 const startContainer = async (image, userId) => {
-    console.log(`Starting container for service: ${image}`);
+    // console.log(`Starting container for service: ${image}`);
     const basePort = 6901; // Starting port to check for availability
     const availablePort = await findAvailablePort(basePort);
     const containerName = 'chrome_' + Date.now().toString();
@@ -57,7 +57,7 @@ const startContainer = async (image, userId) => {
 
     const containerInfo = await container.inspect();
     const hostPort = containerInfo.NetworkSettings.Ports['6901/tcp'][0].HostPort;
-    console.log(`Container started. Access it on https://localhost:${hostPort} with VNC_PW=password`);
+    // console.log(`Container started. Access it on https://localhost:${hostPort} with VNC_PW=password`);
 
     // Access container ID
     const containerId = container.id;
@@ -74,10 +74,13 @@ const startContainer = async (image, userId) => {
     // Update the User document
     try {
         await User.findByIdAndUpdate(userId, {
-            $set: { running: 'Yes', serviceId: service._id },
+            $set: { running: true, serviceId: service._id },
         }, { new: true }).exec();
     } catch (err) {
         console.error(err);
+        await User.findByIdAndUpdate(userId, {
+            $set: { running: false, serviceId: 'N/A' },
+        }, { new: true }).exec();
     }
 
     return { container, hostPort, containerName, containerId }; // Return container details

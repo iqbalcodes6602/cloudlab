@@ -5,6 +5,7 @@ const router = express.Router();
 const dockerService = require('../services/dockerService');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Service = require('../models/Service');
 
 // List of available services
 const availableServices = [
@@ -12,26 +13,41 @@ const availableServices = [
     { name: 'chrome', image: 'kasmweb/chrome:1.14.0' }
 ];
 
+const ifRunning = async (userId) => {
+    const user = await User.findById(userId);
+    if (user.running) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // Endpoint to get available services
 router.get('/', (req, res) => {
     res.json(availableServices);
 });
 
 router.post('/start', async (req, res) => {
+    
     const { image, user } = req.body;
-    console.log(req.body)
+    // // console.log(req.body)
     const userId = jwt.decode(user).userId
+    
+    if (await ifRunning(userId)) {
+        return res.status(400).json({ message: 'Service already running.' });
+    }
+    
     try {
-        console.log(image, userId);
+        // console.log(image, userId);
         try {
             const updatedUser = await User.findByIdAndUpdate(
                 userId,
                 { $set: { running: image } },
                 { new: true }
-            ).exec(); 
-        
+            ).exec();
+
             // Success, use updatedUser if needed
-            console.log(updatedUser);
+            // console.log(updatedUser);
         } catch (err) {
             // Handle error
             console.error(err);
@@ -42,12 +58,12 @@ router.post('/start', async (req, res) => {
         try {
             const updatedUser = await User.findByIdAndUpdate(
                 userId,
-                { $set: { running: 'N/A' } },
+                { $set: { running: false, serviceId: 'N/A' }, },
                 { new: true }
             ).exec();
-        
+
             // Success, use updatedUser if needed
-            console.log(updatedUser);
+            // console.log(updatedUser);
         } catch (err) {
             // Handle error
             console.error(err);
@@ -57,11 +73,44 @@ router.post('/start', async (req, res) => {
 });
 
 router.post('/stop', async (req, res) => {
-    const { containerId } = req.body;
+    const { userId } = req.body;
+    const ownerId = jwt.decode(userId).userId
     try {
-        await dockerService.stopContainer(containerId);
-        res.status(200).json({ message: 'Service stopped successfully.' });
+        // Find the user by userId
+        const user = await User.findById(ownerId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        // Check if the user has a serviceId
+        if (user.serviceId === 'N/A') {
+            return res.status(400).json({ message: 'No service to stop for this user.' });
+        }
+
+        // Find the service by serviceId from the user schema
+        const service = await Service.findById(user.serviceId);
+        if (!service) {
+            // If service not found, set user's serviceId to 'N/A'
+            user.running = true;
+            user.serviceId = 'N/A';
+            await user.save();
+            return res.status(404).json({ message: 'Service not found.' });
+        }
+
+        // Stop the container using the containerId from the service schema
+        await dockerService.stopContainer(service.containerId);
+
+        // Delete the service record
+        await Service.findByIdAndDelete(service._id);
+
+        // Set the user's serviceId to 'N/A'
+        user.running = false;
+        user.serviceId = 'N/A';
+        await user.save();
+
+        res.status(200).json({ message: 'Service stopped and record deleted successfully.' });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Failed to stop service.', error });
     }
 });
