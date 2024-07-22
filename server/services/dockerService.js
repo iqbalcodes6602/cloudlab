@@ -1,9 +1,8 @@
-// backend/services/dockerService.js
-
 const Docker = require('dockerode');
 const docker = new Docker();
-
 const net = require('net');
+const User = require('../models/User');
+const Service = require('../models/Service'); // Import the Service model
 
 // Function to check if a port is available
 const checkPortAvailability = (port) => {
@@ -37,14 +36,15 @@ const findAvailablePort = async (startPort) => {
     }
 };
 
-const startContainer = async (image) => {
+const startContainer = async (image, userId) => {
     console.log(`Starting container for service: ${image}`);
     const basePort = 6901; // Starting port to check for availability
     const availablePort = await findAvailablePort(basePort);
+    const containerName = 'chrome_' + Date.now().toString();
 
     const container = await docker.createContainer({
         Image: image,
-        name: 'chrome_' + Date.now().toString(),
+        name: containerName,
         Tty: true,
         ExposedPorts: { '6901/tcp': {} },
         HostConfig: {
@@ -59,7 +59,28 @@ const startContainer = async (image) => {
     const hostPort = containerInfo.NetworkSettings.Ports['6901/tcp'][0].HostPort;
     console.log(`Container started. Access it on https://localhost:${hostPort} with VNC_PW=password`);
 
-    return {container, hostPort};
+    // Access container ID
+    const containerId = container.id;
+
+    // Create a new Service document
+    const service = new Service({
+        image: image,
+        containerName: containerName,
+        containerId: containerId,
+        port: hostPort,
+    });
+    await service.save();
+
+    // Update the User document
+    try {
+        await User.findByIdAndUpdate(userId, {
+            $set: { running: 'Yes', serviceId: service._id },
+        }, { new: true }).exec();
+    } catch (err) {
+        console.error(err);
+    }
+
+    return { container, hostPort, containerName, containerId }; // Return container details
 };
 
 const stopContainer = async (containerId) => {

@@ -3,6 +3,8 @@
 const express = require('express');
 const router = express.Router();
 const dockerService = require('../services/dockerService');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 // List of available services
 const availableServices = [
@@ -16,12 +18,40 @@ router.get('/', (req, res) => {
 });
 
 router.post('/start', async (req, res) => {
-    const { image } = req.body;
+    const { image, user } = req.body;
+    console.log(req.body)
+    const userId = jwt.decode(user).userId
     try {
-        console.log(image);
-        const container = await dockerService.startContainer(image);
+        console.log(image, userId);
+        try {
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { $set: { running: image } },
+                { new: true }
+            ).exec(); 
+        
+            // Success, use updatedUser if needed
+            console.log(updatedUser);
+        } catch (err) {
+            // Handle error
+            console.error(err);
+        }
+        const container = await dockerService.startContainer(image, userId);
         res.status(200).json(container);
     } catch (error) {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { $set: { running: 'N/A' } },
+                { new: true }
+            ).exec();
+        
+            // Success, use updatedUser if needed
+            console.log(updatedUser);
+        } catch (err) {
+            // Handle error
+            console.error(err);
+        }
         res.status(500).json({ message: 'Failed to start service.', error });
     }
 });

@@ -1,6 +1,6 @@
 // frontend/src/components/Login.js
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 const Login = ({ setUser, user }) => {
@@ -13,10 +13,9 @@ const Login = ({ setUser, user }) => {
         try {
             const response = await axios.post('http://localhost:5000/api/users/login', { username, password })
                 .then((response) => {
+                    console.log(response.data);
                     setUser(response.data);
-                    localStorage.setItem('token', response.data.token);
-                    console.log(response.data)
-                    console.log(user)
+                    localStorage.setItem('token', response.data);
                 })
         } catch (error) {
             setMessage('Failed to log in.');

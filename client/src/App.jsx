@@ -9,13 +9,14 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [services, setServices] = useState([]);
   const [message, setMessage] = useState('');
-  const [port, setPort] = useState(0);
   const [serviceStates, setServiceStates] = useState({}); // Initialize serviceStates as an object
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setUser(token)
+  }, [])
 
+  useEffect(() => {
     const fetchServices = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/services');
@@ -37,7 +38,7 @@ const App = () => {
   const startService = async (serviceName, image) => {
     try {
       console.log(serviceName, image)
-      const response = await axios.post('http://localhost:5000/api/services/start', { image });
+      const response = await axios.post('http://localhost:5000/api/services/start', { image, user });
       // Update state for the specific service
       setServiceStates(prev => ({
         ...prev,
@@ -70,6 +71,7 @@ const App = () => {
         {user ? (
           <div>
             <h2>Welcome, {user.username}</h2>
+            <button onClick={() => { console.log(user) }}>check user</button>
             <div>
               <button onClick={() => {
                 localStorage.removeItem('token')
