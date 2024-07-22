@@ -13,7 +13,7 @@ const availableServices = [
     { name: 'chrome', image: 'kasmweb/chrome:1.14.0' }
 ];
 
-const ifRunning = async (userId) => {
+const isRunning = async (userId) => {
     const user = await User.findById(userId);
     if (user.running) {
         return true;
@@ -31,7 +31,7 @@ router.post('/start', async (req, res) => {
     const { image, user } = req.body;
     const userId = jwt.decode(user).userId
     
-    if (await ifRunning(userId)) {
+    if (await isRunning(userId)) {
         return res.status(400).json({ message: 'Service already running.' });
     }
     

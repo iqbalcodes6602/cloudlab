@@ -11,7 +11,7 @@ const Login = ({ setUser, user }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/users/login', { username, password })
+            await axios.post('http://localhost:5000/api/users/login', { username, password })
                 .then((response) => {
                     console.log(response.data);
                     setUser(response.data);
