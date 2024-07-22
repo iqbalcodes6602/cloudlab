@@ -28,9 +28,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/start', async (req, res) => {
-    
     const { image, user } = req.body;
-    // // console.log(req.body)
     const userId = jwt.decode(user).userId
     
     if (await ifRunning(userId)) {
@@ -38,16 +36,13 @@ router.post('/start', async (req, res) => {
     }
     
     try {
-        // console.log(image, userId);
         try {
-            const updatedUser = await User.findByIdAndUpdate(
+            await User.findByIdAndUpdate(
                 userId,
                 { $set: { running: image } },
                 { new: true }
             ).exec();
 
-            // Success, use updatedUser if needed
-            // console.log(updatedUser);
         } catch (err) {
             // Handle error
             console.error(err);
@@ -56,14 +51,12 @@ router.post('/start', async (req, res) => {
         res.status(200).json(container);
     } catch (error) {
         try {
-            const updatedUser = await User.findByIdAndUpdate(
+            await User.findByIdAndUpdate(
                 userId,
                 { $set: { running: false, serviceId: 'N/A' }, },
                 { new: true }
             ).exec();
 
-            // Success, use updatedUser if needed
-            // console.log(updatedUser);
         } catch (err) {
             // Handle error
             console.error(err);
