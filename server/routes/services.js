@@ -39,7 +39,7 @@ router.post('/start', async (req, res) => {
         try {
             await User.findByIdAndUpdate(
                 userId,
-                { $set: { running: image } },
+                { $set: { running: true } },
                 { new: true }
             ).exec();
 
