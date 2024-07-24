@@ -27,6 +27,27 @@ router.get('/', (req, res) => {
     res.json(availableServices);
 });
 
+router.post('/running', async (req, res) => {
+    const { user } = req.body;
+    // console.log(user)
+    const userId = jwt.decode(user).userId;
+    
+    if (isRunning(userId)) {
+        try {
+            const service = await Service.findOne({ owner: userId });
+            if (service) {
+                return res.status(200).json({ message: 'Service already running.', image: service.image, hostPort: service.port });
+            } else {
+                return res.status(201).json({ message: 'Service not found.' });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error.', error: error.message });
+        }
+    } else {
+        return res.status(400).json({ message: 'Service not running.' });
+    }
+});
+
 router.post('/start', async (req, res) => {
     const { image, user } = req.body;
     const userId = jwt.decode(user).userId

@@ -34,6 +34,28 @@ const App = () => {
     fetchServices();
   }, []);
 
+  useEffect(() => {
+    const isRunning = async () => {
+      try {
+        console.log(user);
+        const response = await axios.post('http://localhost:5000/api/services/running', { user });
+
+        if (response.status === 200) {
+          // Update state for the specific service
+          setServiceStates(prev => ({
+            ...prev,
+            [response.data.image]: { buttonShow: true, port: response.data.hostPort },
+          }));
+          setMessage(`Service already running.`);
+        }
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    };
+
+    if (user) isRunning();
+  }, [user]);
+
 
   const startService = async (serviceName, image) => {
     try {

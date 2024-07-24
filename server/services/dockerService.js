@@ -62,13 +62,16 @@ const startContainer = async (image, userId) => {
     // Access container ID
     const containerId = container.id;
 
+
     // Create a new Service document
     const service = new Service({
+        owner: userId,
         image: image,
         containerName: containerName,
         containerId: containerId,
         port: hostPort,
     });
+    // console.log(service)
     await service.save();
 
     // Update the User document

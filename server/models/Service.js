@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 
 const ServiceSchema = new mongoose.Schema({
-    owner: { tyep: String },
+    owner: { type: String },
     image: { type: String },
     containerName: { type: String },
     containerId: { type: String },
