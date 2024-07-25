@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Header() {
+function Header({showLogin, setShowLogin}) {
     return (
         <div>
             <header className="header" data-header="">
@@ -35,11 +35,8 @@ function Header() {
                             </li>
                         </ul>
                         <div className="header-actions">
-                            <a href="#contact" className="header-action-link">
-                                Log in
-                            </a>
-                            <a href="#contact" className="header-action-link">
-                                Register
+                            <a href="#contact" className="header-action-link" onClick={() => setShowLogin(!showLogin)}>
+                                Log In / Register
                             </a>
                         </div>
                     </nav>

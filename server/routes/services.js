@@ -9,8 +9,36 @@ const Service = require('../models/Service');
 
 // List of available services
 const availableServices = [
-    { name: 'ubuntu', image: 'kasmweb/ubuntu-bionic-desktop:1.10.0-rolling' },
-    { name: 'chrome', image: 'kasmweb/chrome:1.14.0' }
+    { 
+        name: 'Ubuntu', 
+        image: 'kasmweb/ubuntu-bionic-desktop:1.10.0-rolling',
+        description: 'A full Ubuntu desktop environment for development, testing, and general use. It includes a wide range of pre-installed tools and applications to facilitate software development and system administration tasks.'
+    },
+    { 
+        name: 'Chrome', 
+        image: 'kasmweb/chrome:1.14.0',
+        description: 'Google Chrome browser for secure and efficient web browsing. It provides a fast, simple, and secure browsing experience with support for the latest web standards and technologies.'
+    },
+    { 
+        name: 'VS Code', 
+        image: 'kasmweb/code:1.60.0',
+        description: 'Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS, and Linux. It comes with built-in support for JavaScript, TypeScript, and Node.js and has a rich ecosystem of extensions for other languages and runtimes.'
+    },
+    { 
+        name: 'Brave', 
+        image: 'kasmweb/brave:1.29.0',
+        description: 'Brave is a free and open-source web browser developed by Brave Software, Inc. based on the Chromium web browser. It blocks ads and website trackers by default and provides a way for users to send cryptocurrency contributions in the form of Basic Attention Tokens to websites and content creators.'
+    },
+    { 
+        name: 'Windows', 
+        image: 'kasmweb/windows10:1.0.0',
+        description: 'A virtualized Windows 10 environment for development, testing, and general use. It includes a wide range of pre-installed tools and applications to facilitate software development and system administration tasks.'
+    },
+    { 
+        name: 'Postman', 
+        image: 'kasmweb/postman:8.0.7',
+        description: 'Postman is a collaboration platform for API development. It simplifies each step of building an API and streamlines collaboration so you can create better APIs faster. It provides a powerful GUI for making HTTP requests and viewing responses.'
+    }
 ];
 
 const isRunning = async (userId) => {

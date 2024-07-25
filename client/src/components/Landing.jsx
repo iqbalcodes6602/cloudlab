@@ -1,22 +1,22 @@
 import React, { useState } from 'react'
-import Header from './components/Header'
+import Header from './Header'
 
-import heroBanner from "./assets/hero-banner.png"
-import featuresImg1 from "./assets/features-img-1.avif"
-import featuresImg2 from "./assets/features-img-2.png"
-import blogBanner1 from "./assets/blog-banner-1.png"
-import blogBanner2 from "./assets/blog-banner-2.png"
-import blogBanner3 from "./assets/blog-banner-3.png"
-import Footer from './components/Footer'
-import Register from './components/Register'
-import Login from './components/Login'
+import heroBanner from "../assets/hero-banner.png"
+import featuresImg1 from "../assets/features-img-1.avif"
+import featuresImg2 from "../assets/features-img-2.png"
+import blogBanner1 from "../assets/blog-banner-1.png"
+import blogBanner2 from "../assets/blog-banner-2.png"
+import blogBanner3 from "../assets/blog-banner-3.png"
+import Footer from './Footer'
+import Register from './Register'
+import Login from './Login'
 
 
-function Landing({user, setUser}) {
+function Landing({ user, setUser }) {
     const [showLogin, setShowLogin] = useState(false)
     return (
         <div>
-            <Header />
+            <Header showLogin={showLogin} setShowLogin={setShowLogin} />
             <main>
                 <article>
                     {/* - HERO*/}
@@ -220,7 +220,16 @@ function Landing({user, setUser}) {
                                         collaborate with your team, or access powerful desktop environments from
                                         anywhere, CloudLab has you covered.
                                         <br />
-                                        If you already have an account <span style={{ fontWeight: 700, textDecoration: 'underline', cursor: 'pointer', display: 'inline' }} onClick={() => setShowLogin(!showLogin)}>Sign In Here.</span>
+                                        {
+                                            showLogin
+                                                ?
+                                                <>
+                                                    Dont have an account? <span style={{ fontWeight: 700, textDecoration: 'underline', cursor: 'pointer', display: 'inline' }} onClick={() => setShowLogin(!showLogin)}>Sign Up.</span>
+                                                </> :
+                                                <>
+                                                    If you already have an account? <span style={{ fontWeight: 700, textDecoration: 'underline', cursor: 'pointer', display: 'inline' }} onClick={() => setShowLogin(!showLogin)}>Sign In.</span>
+                                                </>
+                                        }
                                     </p>
                                 </div>
 
