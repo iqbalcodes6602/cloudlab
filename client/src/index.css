@@ -313,7 +313,6 @@ body {
   font-size: var(--fs-4);
   font-weight: var(--fw-500);
   line-height: 1.8;
-  margin-bottom: 40px;
 }
 
 .form-text {
