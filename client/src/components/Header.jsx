@@ -1,13 +1,12 @@
 import React from 'react'
-import logo from "../assets/logo.svg"
 
 function Header() {
     return (
         <div>
             <header className="header" data-header="">
                 <div className="container">
-                    <span className="logo" style={{width:'25%'}}>
-                        <img src={logo} alt="Landio logo" style={{width:'50%'}} />
+                    <span className="logo">
+                        <h3 className="h1 hero-title" style={{ fontSize: '2rem', marginBottom: '0' }}>CloudLab</h3>
                     </span>
                     <button className="menu-toggle-btn" data-nav-toggle-btn="">
                         <ion-icon name="menu-outline" />
@@ -25,28 +24,23 @@ function Header() {
                                 </a>
                             </li>
                             <li>
-                                <span className="navbar-link">
-                                    Pricing
-                                </span>
-                            </li>
-                            <li>
                                 <a href="#blog" className="navbar-link">
-                                    Blog
+                                    Workspaces
                                 </a>
                             </li>
                             <li>
                                 <a href="#contact" className="navbar-link">
-                                    Contact Us
+                                    Get Started
                                 </a>
                             </li>
                         </ul>
                         <div className="header-actions">
-                            <span className="header-action-link">
+                            <a href="#contact" className="header-action-link">
                                 Log in
-                            </span>
-                            <span className="header-action-link">
+                            </a>
+                            <a href="#contact" className="header-action-link">
                                 Register
-                            </span>
+                            </a>
                         </div>
                     </nav>
                 </div>

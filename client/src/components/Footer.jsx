@@ -1,7 +1,5 @@
 import React from 'react'
 
-import footer from "../assets/logo-footer.svg"
-
 function Footer() {
     return (
         <div>
@@ -10,7 +8,7 @@ function Footer() {
                     <div className="container">
                         <div className="footer-brand">
                             <span className="logo">
-                                <img style={{width:'100%'}} src={footer} alt="Landio logo" />
+                                <h3 className="h1 hero-title" style={{ fontSize: '2rem', marginBottom: '0', color:'#fff' }}>CloudLab</h3>
                             </span>
                             <p className="footer-text">
                                 CloudLab provides a powerful cloud-based workspace solution for
@@ -132,7 +130,7 @@ function Footer() {
                 <div className="footer-bottom">
                     <div className="container">
                         <p className="copyright">
-                            © 2024 <span>CloudLab</span>. All Right Reserved
+                            © 2024 <span style={{ display: 'inline' }}>CloudLab</span>. All Right Reserved
                         </p>
                     </div>
                 </div>

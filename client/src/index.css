@@ -77,7 +77,7 @@ code {
    * spacing
    */
 
-  --section-padding: 150px;
+  --section-padding: 100px;
 
 }
 
@@ -304,7 +304,7 @@ body { background: var(--white); }
 
 .hero .btn-primary { margin-inline: auto; }
 
-/* .hero-banner img { width: 100%; } */
+.hero-banner img { width: 100%; }
 
 
 
