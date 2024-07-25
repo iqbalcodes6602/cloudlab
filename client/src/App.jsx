@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Login from './components/Login';
-import Register from './components/Register';
+import Landing from './Landing';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -121,11 +120,7 @@ const App = () => {
             </div>
           </div>
         ) : (
-          <div>
-            <h2>Please log in or register</h2>
-            <Login setUser={setUser} user={user} />
-            <Register setUser={setUser} />
-          </div>
+          <Landing user={user} setUser={setUser} />
         )}
       </div>
       {message && <p>{message}</p>}
