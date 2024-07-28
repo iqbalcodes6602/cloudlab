@@ -16,7 +16,7 @@ function Landing({ user, setUser }) {
     const [showLogin, setShowLogin] = useState(false)
     return (
         <div>
-            <Header showLogin={showLogin} setShowLogin={setShowLogin} />
+            <Header user={user} setUser={setUser} showLogin={showLogin} setShowLogin={setShowLogin} />
             <main>
                 <article>
                     {/* - HERO*/}
@@ -44,7 +44,7 @@ function Landing({ user, setUser }) {
 
 
                     {/* - ABOUT*/}
-                    <section className="products">
+                    <section className="products" id='products'>
                         <div className="container">
                             <div className="about-content">
                                 <div className="about-icon">
@@ -206,42 +206,6 @@ function Landing({ user, setUser }) {
                     </section>
 
 
-
-                    {/* - CONTACT*/}
-
-                    <section className="contact" id="contact">
-                        <div className="container">
-                            <div className="contact-wrapper">
-                                <div>
-                                    <h2 className="h2 section-title">Get Started By Registering</h2>
-                                    <p className="section-text">
-                                        Join CloudLab today and unlock the full potential of our cloud-based
-                                        workspace solutions. Whether you're looking to streamline your workflow,
-                                        collaborate with your team, or access powerful desktop environments from
-                                        anywhere, CloudLab has you covered.
-                                        <br />
-                                        {
-                                            showLogin
-                                                ?
-                                                <>
-                                                    Dont have an account? <span style={{ fontWeight: 700, textDecoration: 'underline', cursor: 'pointer', display: 'inline' }} onClick={() => setShowLogin(!showLogin)}>Sign Up.</span>
-                                                </> :
-                                                <>
-                                                    If you already have an account? <span style={{ fontWeight: 700, textDecoration: 'underline', cursor: 'pointer', display: 'inline' }} onClick={() => setShowLogin(!showLogin)}>Sign In.</span>
-                                                </>
-                                        }
-                                    </p>
-                                </div>
-
-                                {showLogin ?
-                                    <Login user={user} setUser={setUser} /> :
-                                    <Register />
-                                }
-
-                            </div>
-
-                        </div>
-                    </section>
                 </article>
             </main>
             <Footer />

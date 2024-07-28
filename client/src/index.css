@@ -197,7 +197,6 @@ button {
 
 input,
 textarea {
-  border: none;
   font: inherit;
   width: 100%;
 }

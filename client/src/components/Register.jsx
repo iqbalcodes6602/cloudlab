@@ -3,7 +3,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const Register = ({ setUser }) => {
+
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "./ui/card"
+
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
+import { Button } from './ui/button';
+
+const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -21,37 +35,42 @@ const Register = ({ setUser }) => {
     return (
         <>
             <form onSubmit={handleRegister}>
-            <h2>Sign Up</h2> <br />
-                <div className="wrapper-flex">
-                    <div className="input-wrapper">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            type="text"
-                            placeholder="Username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            className="input-field"
-                        />
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="input-field"
-                        />
-                    </div>
-                </div>
-                <button type="submit" className="btn btn-primary">
-                    <span>Register</span>
-                    <ion-icon name="paper-plane-outline" />
-                </button>
-                <br />
-                {message && <p style={{ color: 'hsl(212, 17%, 61%)' }}>{message}</p>}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Create a new account</CardTitle>
+                        <CardDescription>
+                            Create an account to use the workspaces and access all the services.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        <div className="space-y-1">
+                            <Label htmlFor="username">Username</Label>
+                            <Input
+                                id="username"
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <Label htmlFor="password">Password</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button type="submit">Register</Button>
+                    </CardFooter>
+                    {message && <p style={{ color: 'hsl(212, 17%, 61%)' }}>{message}</p>}
+                </Card>
             </form>
 
         </>

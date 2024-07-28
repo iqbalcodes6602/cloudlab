@@ -1,6 +1,33 @@
 import React from 'react'
+import { Button } from "./ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+} from "./ui/dialog"
 
-function Header({showLogin, setShowLogin}) {
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "./ui/card"
+
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "./ui/tabs"
+
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
+import Login from './Login'
+import Register from './Register'
+
+function Header({ user, setUser, showLogin, setShowLogin }) {
     return (
         <div>
             <header className="header" data-header="">
@@ -19,6 +46,11 @@ function Header({showLogin, setShowLogin}) {
                                 </a>
                             </li>
                             <li>
+                                <a href="#products" className="navbar-link">
+                                    How It Works
+                                </a>
+                            </li>
+                            <li>
                                 <a href="#features" className="navbar-link">
                                     Features
                                 </a>
@@ -28,20 +60,32 @@ function Header({showLogin, setShowLogin}) {
                                     Workspaces
                                 </a>
                             </li>
-                            <li>
-                                <a href="#contact" className="navbar-link">
-                                    Get Started
-                                </a>
-                            </li>
                         </ul>
                         <div className="header-actions">
-                            <a href="#contact" className="header-action-link" onClick={() => setShowLogin(!showLogin)}>
-                                Log In / Register
-                            </a>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline">Log In / Register</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px] pt-10">
+                                    <Tabs defaultValue="signin" className="w-[375px]">
+                                        <TabsList className="grid w-full grid-cols-2">
+                                            <TabsTrigger value="signin">Sign In</TabsTrigger>
+                                            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                                        </TabsList>
+                                        <TabsContent value="signin">
+                                            <Login user={user} setUser={setUser} />
+                                        </TabsContent>
+                                        <TabsContent value="signup">
+                                            <Register />
+                                        </TabsContent>
+                                    </Tabs>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </nav>
                 </div>
             </header>
+
         </div>
     )
 }
