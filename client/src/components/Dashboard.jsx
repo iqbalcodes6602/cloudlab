@@ -8,11 +8,18 @@ import {
     DialogContent,
     DialogTrigger,
 } from "./ui/dialog"
+
+import { ToastAction } from "./ui/toast"
+import { useToast } from "./ui/use-toast"
+
 import HowItWorks from './HowItWorks';
+import { LoaderCircle } from 'lucide-react';
 
 function Dashboard({ user, setUser }) {
+    const { toast } = useToast()
+
+    const [loading, setLoading] = useState(false);
     const [services, setServices] = useState([]);
-    const [message, setMessage] = useState('');
     const [serviceStates, setServiceStates] = useState({}); // Initialize serviceStates as an object
 
     useEffect(() => {
@@ -26,7 +33,7 @@ function Dashboard({ user, setUser }) {
                 }, {});
                 setServiceStates(initialStates);
             } catch (error) {
-                setMessage('Failed to load services.');
+                console.log('Failed to load services.');
             }
         };
 
@@ -46,6 +53,11 @@ function Dashboard({ user, setUser }) {
                 }
             } catch (error) {
                 console.log(error.response.data.message);
+                toast({
+                    variant: "destructive",
+                    title: 'Error fetching running service. Please Reload.',
+                    description: error.response.data.message,
+                })
             }
         };
 
@@ -59,22 +71,46 @@ function Dashboard({ user, setUser }) {
                 ...prev,
                 [image]: { buttonShow: true, port: response.data.hostPort },
             }));
-            setMessage(`Service ${serviceName} started.`);
+            console.log(`Service ${serviceName} started.`);
+            toast({
+                variant: "success",
+                title: serviceName + ' started successfully.',
+                description: "Access the service by clicking on the 'Access Service' button.",
+                action: <ToastAction altText="Access"><a className='' href={`https://localhost:${response.data.hostPort}`} target="_blank" rel="noopener noreferrer">Access Service</a></ToastAction>,
+            })
         } catch (error) {
-            setMessage(`Failed to start service: ${error.response.data.message}`);
+            console.log(`Failed to start service: ${error.response.data.message}`);
+            toast({
+                variant: "destructive",
+                title: serviceName + ' failed to start.',
+                description: error.response.data.message,
+            })
         }
     };
 
     const stopService = async (serviceName, image) => {
+        setLoading(true);
         try {
             await axios.post('http://localhost:5000/api/services/stop', { userId: user });
             setServiceStates(prev => ({
                 ...prev,
                 [image]: { ...prev[image], buttonShow: false },
             }));
-            setMessage('Service stopped successfully.');
+            console.log('Service stopped successfully.');
+            toast({
+                variant: "success",
+                title: serviceName + ' stopped successfully.',
+                description: 'You can start the service again by clicking on the "Start" button.',
+            })
+            setLoading(false);
         } catch (error) {
-            setMessage(`Failed to stop service: ${error.response.data.message}`);
+            console.log(`Failed to stop service: ${error.response.data.message}`);
+            toast({
+                variant: "destructive",
+                title: serviceName + ' failed to stop.',
+                description: error.response.data.message,
+            })
+            setLoading(false);
         }
     };
 
@@ -83,7 +119,9 @@ function Dashboard({ user, setUser }) {
             <section className="blog" id="blog">
                 <div className="container">
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <h2 className="h2 section-title" style={{ marginBottom: '0' }}>Welcome to Service Dashboard</h2>
+                        <h2 className="h2 section-title" style={{ marginBottom: '0' }}>
+                            Welcome to Service Dashboard
+                        </h2>
                         <div className='flex gap-5'>
                             <Dialog>
                                 <DialogTrigger asChild>
@@ -94,14 +132,14 @@ function Dashboard({ user, setUser }) {
                                 </DialogContent>
                             </Dialog>
 
-                            <button onClick={() => {
+                            <Button onClick={() => {
                                 localStorage.removeItem('token');
                                 setUser(null);
                             }}
-                                style={{ backgroundColor: '#ff4545', color: 'white', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer' }}
+                                variant="destructive"
                             >
                                 Logout
-                            </button>
+                            </Button>
                         </div>
                     </div>
                     <p style={{ margin: '40px 0px', lineHeight: '1.4', color: 'hsl(212, 17%, 61%)' }}>
@@ -114,11 +152,19 @@ function Dashboard({ user, setUser }) {
                             {services.map(service => (
                                 serviceStates[service.image]?.buttonShow && (
                                     <div key={service.name} style={{ display: 'flex' }}>
-                                        <a style={{ backgroundColor: '#2ac3b4', color: 'white', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', marginRight: '20px' }} href={`https://localhost:${serviceStates[service.image].port}`} target="_blank" rel="noopener noreferrer">
+                                        <a className='bg-green-500' style={{ color: 'white', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', marginRight: '20px' }} href={`https://localhost:${serviceStates[service.image].port}`} target="_blank" rel="noopener noreferrer">
                                             Access {service.name}
                                         </a>
                                         <button style={{ backgroundColor: '#0077ff', color: 'white', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => stopService(service.name, service.image)}>
-                                            Stop {service.name}
+                                            {loading ?
+                                                <>
+                                                    <LoaderCircle className='animate-spin' />
+                                                </>
+                                                :
+                                                <>
+                                                    Stop {service.name}
+                                                </>
+                                            }
                                         </button>
                                     </div>
                                 )
@@ -136,7 +182,7 @@ function Dashboard({ user, setUser }) {
                                         <span className="blog-link-btn" style={{ justifyContent: 'space-between', marginBottom: '10px' }}>
                                             <h3 className="blog-title">{service.name}</h3>
                                             {serviceStates[service.image]?.buttonShow ? (
-                                                <a href={`https://localhost:${serviceStates[service.image].port}`} target="_blank" rel="noopener noreferrer" style={{ cursor: 'pointer', color: '#2ac3b4' }}>
+                                                <a href={`https://localhost:${serviceStates[service.image].port}`} target="_blank" rel="noopener noreferrer" className='text-green-500 cursor-pointer'>
                                                     Access Service
                                                 </a>
                                             ) : (
@@ -152,7 +198,7 @@ function Dashboard({ user, setUser }) {
                 </div>
             </section>
 
-            {message && <p>{message}</p>}
+            {/* {message && <p>{message}</p>} */}
         </div>
     );
 }
