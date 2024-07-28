@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
+import { useToast } from "./ui/use-toast"
 
 import {
     Card,
@@ -22,9 +23,10 @@ import { Label } from "./ui/label"
 import { Button } from './ui/button';
 
 const Login = ({ setUser, user }) => {
+    const { toast } = useToast()
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -37,7 +39,11 @@ const Login = ({ setUser, user }) => {
                 })
         } catch (error) {
             console.error(error);
-            setMessage('Failed to log in.');
+            toast({
+                variant: "destructive",
+                title: "Login failed",
+                description: error.response.data.message,
+            })
         }
     };
 
@@ -54,22 +60,20 @@ const Login = ({ setUser, user }) => {
                         </CardHeader>
                         <CardContent className="space-y-2">
                             <div className="space-y-1">
-                                <Label htmlFor="name">Username</Label>
+                                <Label htmlFor="username">Username</Label>
                                 <Input
+                                    id="username"
                                     type="text"
                                     placeholder="Username"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     required
-                                    id="name"
-                                    defaultValue="John Doe"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <Label htmlFor="username">Username</Label>
+                                <Label htmlFor="password">Password</Label>
                                 <Input
-                                    id="username"
-                                    defaultValue="@peduarte"
+                                    id="password"
                                     type="password"
                                     placeholder="Password"
                                     value={password}
@@ -84,7 +88,6 @@ const Login = ({ setUser, user }) => {
                     </Card>
                 </TabsContent>
             </Tabs>
-            {message && <p>{message}</p>}
         </form>
     );
 };

@@ -11,6 +11,18 @@ import Footer from './Footer'
 import Register from './Register'
 import Login from './Login'
 
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+} from "./ui/dialog"
+
+import {
+    Tabs,
+    TabsContent,
+} from "./ui/tabs"
+
+import { TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 
 function Landing({ user, setUser }) {
     const [showLogin, setShowLogin] = useState(false)
@@ -31,9 +43,27 @@ function Landing({ user, setUser }) {
                                     <span>🚀</span> Explore seamless and efficient solutions tailored to boost your productivity.
                                 </p>
                                 <form action="" className="hero-form">
-                                    <button type="submit" className="btn btn-primary">
-                                        Get Started
-                                    </button>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <button type="submit" className="btn btn-primary">
+                                                Get Started
+                                            </button>
+                                        </DialogTrigger>
+                                        <DialogContent className="sm:max-w-[425px] pt-10">
+                                            <Tabs defaultValue="signin" className="w-[375px]">
+                                                <TabsList className="grid w-full grid-cols-2">
+                                                    <TabsTrigger value="signin">Sign In</TabsTrigger>
+                                                    <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="signin">
+                                                    <Login user={user} setUser={setUser} />
+                                                </TabsContent>
+                                                <TabsContent value="signup">
+                                                    <Register />
+                                                </TabsContent>
+                                            </Tabs>
+                                        </DialogContent>
+                                    </Dialog>
                                 </form>
                             </div>
                             <figure className="hero-banner">

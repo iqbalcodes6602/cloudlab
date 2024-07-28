@@ -7,27 +7,16 @@ import {
 } from "./ui/dialog"
 
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "./ui/card"
-
-import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
 } from "./ui/tabs"
 
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
 import Login from './Login'
 import Register from './Register'
 
-function Header({ user, setUser, showLogin, setShowLogin }) {
+function Header({ user, setUser }) {
     return (
         <div>
             <header className="header" data-header="">

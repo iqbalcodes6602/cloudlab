@@ -2,7 +2,10 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { Button } from "./ui/button"
+import { useToast } from "./ui/use-toast"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
 
 import {
     Card,
@@ -13,11 +16,10 @@ import {
     CardTitle,
 } from "./ui/card"
 
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
-import { Button } from './ui/button';
 
 const Register = () => {
+    const { toast } = useToast()
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -27,8 +29,18 @@ const Register = () => {
         try {
             await axios.post('http://localhost:5000/api/users/register', { username, password });
             setMessage('Registration successful. You can now log in.');
+            toast({
+                variant: "success",
+                title: "Registration successful.",
+                description: "You can now log in.",
+            })
         } catch (error) {
-            setMessage('Failed to register.');
+            console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: error.response.data.message,
+            })
         }
     };
 
