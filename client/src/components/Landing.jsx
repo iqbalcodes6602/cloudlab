@@ -23,7 +23,7 @@ function Landing({ user, setUser }) {
                     <section className="hero" id="hero">
                         <div className="container">
                             <div className="hero-content">
-                                <h1 className="h1 hero-title">Welcome to CloudLab</h1>
+                                <h1 className="h1 hero-title">Welcome to CloudLab </h1>
                                 <p className="hero-text">
                                     Revolutionize your workspace with CloudLab’s versatile and powerful virtual environments.
                                 </p>
