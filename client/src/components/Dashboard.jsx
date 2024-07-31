@@ -14,6 +14,7 @@ import { useToast } from "./ui/use-toast"
 
 import HowItWorks from './HowItWorks';
 import { LoaderCircle } from 'lucide-react';
+import Footer from './Footer';
 
 function Dashboard({ user, setUser }) {
     const { toast } = useToast()
@@ -66,7 +67,7 @@ function Dashboard({ user, setUser }) {
 
     const startService = async (serviceName, image) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/services/start', { image, user });
+            const response = await axios.post('http://localhost:5000/api/services/start', { image, serviceName, user, });
             setServiceStates(prev => ({
                 ...prev,
                 [image]: { buttonShow: true, port: response.data.hostPort },
@@ -114,6 +115,18 @@ function Dashboard({ user, setUser }) {
         }
     };
 
+    const logOut = async () => {
+        setServiceStates({});
+        setUser(null);
+        localStorage.removeItem('user');
+    
+        try {
+            await axios.post('http://localhost:5000/api/services/stop', { userId: user });
+        } catch (error) {
+            console.error('Error stopping service:', error);
+        }
+    }
+
     return (
         <div>
             <section className="blog" id="blog">
@@ -133,8 +146,7 @@ function Dashboard({ user, setUser }) {
                             </Dialog>
 
                             <Button onClick={() => {
-                                localStorage.removeItem('token');
-                                setUser(null);
+                                logOut()
                             }}
                                 variant="destructive"
                             >
@@ -142,8 +154,17 @@ function Dashboard({ user, setUser }) {
                             </Button>
                         </div>
                     </div>
-                    <p style={{ margin: '40px 0px', lineHeight: '1.4', color: 'hsl(212, 17%, 61%)' }}>
+                    <p style={{ margin: '40px 0px', lineHeight: '1.4', color: 'hsl(212, 20%, 61%)' }}>
                         Dive into the comprehensive suite of virtual environment solutions offered by CloudLab, meticulously engineered accommodate a wide spectrum of needs and amplify productivity across diverse sectors.
+                        <br />
+                        Use the these credentials to access the services:
+                        <br />
+                        <br />
+                        Service Username: <strong className='text-gray-600'> kasm_user</strong>
+                        <br />
+                        Service Password: <strong className='text-gray-600'> [your_user_name]_[your_password] </strong>
+                        <br />
+                        Example: If your username is 'john' and password is 'doe', then the service password will be 'john_doe'.
                     </p>
 
                     {Object.values(serviceStates).some(state => state.buttonShow) && (
@@ -199,6 +220,7 @@ function Dashboard({ user, setUser }) {
             </section>
 
             {/* {message && <p>{message}</p>} */}
+            <Footer />
         </div>
     );
 }

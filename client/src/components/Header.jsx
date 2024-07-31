@@ -74,7 +74,6 @@ function Header({ user, setUser }) {
                     </nav>
                 </div>
             </header>
-
         </div>
     )
 }

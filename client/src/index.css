@@ -149,7 +149,7 @@ code {
    * spacing
    */
 
-  --section-padding: 100px;
+  --section-padding: 125px;
 
 }
 
@@ -364,7 +364,7 @@ body {
 \*-----------------------------------*/
 
 .hero {
-  padding: 150px 0 var(--section-padding);
+  padding: 200px;
   background: var(--ghost-white-1);
 }
 

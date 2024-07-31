@@ -22,13 +22,11 @@ const Register = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
 
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:5000/api/users/register', { username, password });
-            setMessage('Registration successful. You can now log in.');
             toast({
                 variant: "success",
                 title: "Registration successful.",
@@ -81,7 +79,6 @@ const Register = () => {
                     <CardFooter>
                         <Button type="submit">Register</Button>
                     </CardFooter>
-                    {message && <p style={{ color: 'hsl(212, 17%, 61%)' }}>{message}</p>}
                 </Card>
             </form>
 

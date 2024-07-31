@@ -77,7 +77,7 @@ router.post('/running', async (req, res) => {
 });
 
 router.post('/start', async (req, res) => {
-    const { image, user } = req.body;
+    const { image, serviceName, user } = req.body;
     const userId = jwt.decode(user).userId
     
     if (await isRunning(userId)) {
@@ -96,7 +96,7 @@ router.post('/start', async (req, res) => {
             // Handle error
             console.error(err);
         }
-        const container = await dockerService.startContainer(image, userId);
+        const container = await dockerService.startContainer(image, serviceName, userId);
         res.status(200).json(container);
     } catch (error) {
         try {

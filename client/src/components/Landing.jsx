@@ -45,7 +45,7 @@ function Landing({ user, setUser }) {
                                 <form action="" className="hero-form">
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <button type="submit" className="btn btn-primary">
+                                            <button className="btn btn-primary">
                                                 Get Started
                                             </button>
                                         </DialogTrigger>
