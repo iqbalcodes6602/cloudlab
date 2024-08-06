@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     running: { type: Boolean, default: false },
     serviceId: { type: String },
+    role: { type: String, default: 'user' },
 });
 
 UserSchema.methods.validPassword = function (password) {

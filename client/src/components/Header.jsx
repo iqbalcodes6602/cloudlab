@@ -16,7 +16,7 @@ import {
 import Login from './Login'
 import Register from './Register'
 
-function Header({ user, setUser }) {
+function Header({ user, setUser, userDetails, setUserDetails }) {
     return (
         <div>
             <header className="header" data-header="">
@@ -62,7 +62,7 @@ function Header({ user, setUser }) {
                                             <TabsTrigger value="signup">Sign Up</TabsTrigger>
                                         </TabsList>
                                         <TabsContent value="signin">
-                                            <Login user={user} setUser={setUser} />
+                                            <Login user={user} setUser={setUser} userDetails={userDetails} setUserDetails={setUserDetails}  />
                                         </TabsContent>
                                         <TabsContent value="signup">
                                             <Register />

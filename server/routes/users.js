@@ -29,10 +29,19 @@ router.post('/login', async (req, res) => {
             // console.log(user);
             return res.status(400).json({ message: 'Invalid credentials.' });
         }
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id, username: user.username, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json(token);
     } catch (err) {
         res.status(500).json({ message: 'Server error.' });
+    }
+});
+
+router.get('/all-users', async (req, res) => {
+    try {
+        const allUsers = await User.find({}).select('-password');
+        res.status(200).json(allUsers);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to retrieve all users.', error });
     }
 });
 

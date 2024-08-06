@@ -24,11 +24,11 @@ import {
 
 import { TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 
-function Landing({ user, setUser }) {
+function Landing({ user, setUser, userDetails, setUserDetails }) {
     const [showLogin, setShowLogin] = useState(false)
     return (
         <div>
-            <Header user={user} setUser={setUser} showLogin={showLogin} setShowLogin={setShowLogin} />
+            <Header user={user} setUser={setUser} showLogin={showLogin} setShowLogin={setShowLogin} userDetails={userDetails} setUserDetails={setUserDetails}  />
             <main>
                 <article>
                     {/* - HERO*/}

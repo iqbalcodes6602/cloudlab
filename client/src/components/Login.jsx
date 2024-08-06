@@ -21,8 +21,9 @@ import {
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Button } from './ui/button';
+import { jwtDecode } from 'jwt-decode';
 
-const Login = ({ setUser, user }) => {
+const Login = ({ setUser, user, userDetails, setUserDetails }) => {
     const { toast } = useToast()
 
     const [username, setUsername] = useState('');
@@ -35,6 +36,7 @@ const Login = ({ setUser, user }) => {
                 .then((response) => {
                     console.log(response.data);
                     setUser(response.data);
+                    setUserDetails(jwtDecode(response.data));
                     localStorage.setItem('token', response.data);
                 })
         } catch (error) {

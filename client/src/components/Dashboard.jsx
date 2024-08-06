@@ -16,7 +16,7 @@ import HowItWorks from './HowItWorks';
 import { LoaderCircle } from 'lucide-react';
 import Footer from './Footer';
 
-function Dashboard({ user, setUser }) {
+function Dashboard({ user, setUser, userDetails, setUserDetails }) {
     const { toast } = useToast()
 
     const [loading, setLoading] = useState(false);
@@ -118,6 +118,7 @@ function Dashboard({ user, setUser }) {
     const logOut = async () => {
         setServiceStates({});
         setUser(null);
+        setUserDetails(null);
         localStorage.removeItem('token');
     
         try {
@@ -162,7 +163,7 @@ function Dashboard({ user, setUser }) {
                         <br />
                         Service Username: <strong className='text-gray-600'> kasm_user</strong>
                         <br />
-                        Service Password: <strong className='text-gray-600'> [your_user_name]_[your_password] </strong>
+                        Service Password: <strong className='text-gray-600 italic'> [your username]_[your password] </strong>
                         <br />
                         Example: If your username is 'john' and password is 'doe', then the service password will be 'john_doe'.
                     </p>
