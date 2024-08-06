@@ -21,7 +21,7 @@ function Dashboard({ user, setUser }) {
 
     const [loading, setLoading] = useState(false);
     const [services, setServices] = useState([]);
-    const [serviceStates, setServiceStates] = useState({}); // Initialize serviceStates as an object
+    const [serviceStates, setServiceStates] = useState({});
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -118,7 +118,7 @@ function Dashboard({ user, setUser }) {
     const logOut = async () => {
         setServiceStates({});
         setUser(null);
-        localStorage.removeItem('user');
+        localStorage.removeItem('token');
     
         try {
             await axios.post('http://localhost:5000/api/services/stop', { userId: user });
@@ -219,7 +219,6 @@ function Dashboard({ user, setUser }) {
                 </div>
             </section>
 
-            {/* {message && <p>{message}</p>} */}
             <Footer />
         </div>
     );
