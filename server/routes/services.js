@@ -116,6 +116,7 @@ router.post('/start', async (req, res) => {
 
 router.post('/stop', async (req, res) => {
     const { userId } = req.body;
+    // const ownerId = jwt.decode(userId).userId
     const ownerId = userId
     try {
         // Find the user by userId

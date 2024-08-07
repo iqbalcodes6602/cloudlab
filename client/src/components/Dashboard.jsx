@@ -92,7 +92,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
     const stopService = async (serviceName, image) => {
         setLoading(true);
         try {
-            await axios.post('http://localhost:5000/api/services/stop', { userId: user });
+            await axios.post('http://localhost:5000/api/services/stop', { userId: userDetails.userId });
             setServiceStates(prev => ({
                 ...prev,
                 [image]: { ...prev[image], buttonShow: false },
