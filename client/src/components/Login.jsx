@@ -37,6 +37,7 @@ const Login = ({ setUser, user, userDetails, setUserDetails }) => {
                     console.log(response.data);
                     setUser(response.data);
                     setUserDetails(jwtDecode(response.data));
+                    console.log(jwtDecode(response.data));
                     localStorage.setItem('token', response.data);
                 })
         } catch (error) {
