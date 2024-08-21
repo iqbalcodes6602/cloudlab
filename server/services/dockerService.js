@@ -35,11 +35,53 @@ const findAvailablePort = async (startPort) => {
         port++;
     }
 };
+
+// Function to check if an image exists locally
+const imageExists = async (image) => {
+    try {
+        const images = await docker.listImages({ filters: { reference: [image] } });
+        return images.length > 0;
+    } catch (error) {
+        console.error('Error checking if image exists:', error);
+        return false;
+    }
+};
+
+// Function to pull an image if it doesn't exist
+const pullImage = (image) => {
+    return new Promise((resolve, reject) => {
+        docker.pull(image, (err, stream) => {
+            if (err) {
+                return reject(err);
+            }
+            docker.modem.followProgress(stream, onFinished, onProgress);
+
+            function onFinished(err, output) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(output);
+            }
+
+            function onProgress(event) {
+                console.log(event);
+            }
+        });
+    });
+};
+
 const startContainer = async (image, serviceName, userId) => {
     try {
+        // Check if the image exists locally
+        const exists = await imageExists(image);
+        if (!exists) {
+            console.log(`Image ${image} not found locally. Pulling from Docker Hub...`);
+            await pullImage(image);
+            console.log(`Image ${image} successfully pulled.`);
+        }
+
         const user = await User.findById(userId).exec();
         const servicePassword = `${user.username}_${user.password}`;
-        // console.log(servicePassword);
 
         const basePort = 6901; // Starting port to check for availability
         const availablePort = await findAvailablePort(basePort);
@@ -53,14 +95,12 @@ const startContainer = async (image, serviceName, userId) => {
                 ShmSize: 512 * 1024 * 1024,
                 PortBindings: { '6901/tcp': [{ HostPort: `${availablePort}` }] }, // Use available port
             },
-            // Env: ['VNC_PW=password'],
             Env: [`VNC_PW=${servicePassword}`],
         });
         await container.start();
 
         const containerInfo = await container.inspect();
         const hostPort = containerInfo.NetworkSettings.Ports['6901/tcp'][0].HostPort;
-        // console.log(`Container started. Access it on https://localhost:${hostPort} with VNC_PW=password`);
 
         // Access container ID
         const containerId = container.id;
@@ -75,7 +115,6 @@ const startContainer = async (image, serviceName, userId) => {
             port: hostPort,
             createdAt: new Date(),
         });
-        // console.log(service)
         await service.save();
 
         // Update the User document
