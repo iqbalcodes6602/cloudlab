@@ -120,7 +120,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
         setUser(null);
         setUserDetails(null);
         localStorage.removeItem('token');
-    
+
         try {
             await axios.post('http://localhost:5000/api/services/stop', { userId: user });
         } catch (error) {
@@ -198,7 +198,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
                             <li key={service.name}>
                                 <div className="blog-card">
                                     <figure className="blog-banner">
-                                        <img src={blogBanner1} alt="Ubuntu Workspace" />
+                                        <img src={service.pic} alt="service" className="w-32 h-32 object-cover" />
                                     </figure>
                                     <div style={{ padding: '0px 10px' }}>
                                         <span className="blog-link-btn" style={{ justifyContent: 'space-between', marginBottom: '10px' }}>

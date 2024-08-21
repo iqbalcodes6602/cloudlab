@@ -217,13 +217,13 @@ function Landing({ user, setUser, userDetails, setUserDetails }) {
                                     <div className="blog-card">
                                         <figure className="blog-banner">
                                             <img
-                                                src={blogBanner3}
+                                                src={'https://blenderartists.org/uploads/default/original/4X/d/6/3/d6376346ec38ed339bf5a10411348f255793804b.jpg'}
                                                 alt="Windows Workspace"
                                             />
                                         </figure>
-                                        <h3 className="blog-title">Windows Workspace</h3>
+                                        <h3 className="blog-title">Blender</h3>
                                         <p className="blog-text">
-                                            Utilize the familiar Windows operating system in your virtual workspace, ideal for business and everyday tasks.
+                                            Discover the limitless possibilities of 3D creation with Blender, a powerful open-source software for modeling, animation, and more.
                                         </p>
                                         <span className="blog-link-btn">
                                             <span>Learn More</span>

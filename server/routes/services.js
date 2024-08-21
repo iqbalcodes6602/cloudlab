@@ -12,32 +12,38 @@ const availableServices = [
     {
         name: 'Ubuntu',
         image: 'kasmweb/ubuntu-bionic-desktop:1.10.0-rolling',
-        description: 'A full Ubuntu desktop environment for development, testing, and general use. It includes a wide range of pre-installed tools and applications to facilitate software development and system administration tasks.'
+        description: 'A full Ubuntu desktop environment for development, testing, and general use. It includes a wide range of pre-installed tools and applications to facilitate software development and system administration tasks.',
+        pic: 'https://ubuntu.com/wp-content/uploads/a9c1/Screenshot-from-2022-04-18-13-05-17-min.png'
     },
     {
         name: 'Chrome',
         image: 'kasmweb/chrome:1.14.0',
-        description: 'Google Chrome browser for secure and efficient web browsing. It provides a fast, simple, and secure browsing experience with support for the latest web standards and technologies.'
+        description: 'Google Chrome browser for secure and efficient web browsing. It provides a fast, simple, and secure browsing experience with support for the latest web standards and technologies.',
+        pic: 'https://www.google.com/chrome/static/images/intl/en_AU/homepage/fast/mobile-xp/fast-mobile_desktop.png',
     },
     {
         name: 'VS Code',
         image: 'kasmweb/vs-code:1.14.0',
-        description: 'Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS, and Linux. It comes with built-in support for JavaScript, TypeScript, and Node.js and has a rich ecosystem of extensions for other languages and runtimes.'
+        description: 'Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS, and Linux. It comes with built-in support for JavaScript, TypeScript, and Node.js and has a rich ecosystem of extensions for other languages and runtimes.',
+        pic: 'https://education.launchcode.org/lchs/_images/vscode-welcome.png'
     },
     {
         name: 'Windows',
         image: 'dockurr/windows',
-        description: 'A virtualized Windows 10 environment for development, testing, and general use. It includes a wide range of pre-installed tools and applications to facilitate software development and system administration tasks.'
+        description: 'A virtualized Windows 10 environment for development, testing, and general use. It includes a wide range of pre-installed tools and applications to facilitate software development and system administration tasks.',
+        pic: 'https://i.ytimg.com/vi/OuNf9p2_nJ0/maxresdefault.jpg'
     },
     {
         name: 'Blender',
         image: 'kasmweb/blender:1.14.0',
-        description: 'Blender is a free and open-source 3D creation suite. It supports the entirety of the 3D pipeline—modeling, rigging, animation, simulation, rendering, compositing, motion tracking, and video editing.'
+        description: 'Blender is a free and open-source 3D creation suite. It supports the entirety of the 3D pipeline—modeling, rigging, animation, simulation, rendering, compositing, motion tracking, and video editing.',
+        pic: 'https://blenderartists.org/uploads/default/original/4X/d/6/3/d6376346ec38ed339bf5a10411348f255793804b.jpg'
     },
     {
         name: 'Pinta',
         image: 'kasmweb/pinta:1.14.0',
-        description: 'Pinta is a free, open-source drawing/editing program modeled after Paint.NET. Its goal is to provide a simplified alternative to GIMP for casual users.'
+        description: 'Pinta is a free, open-source drawing/editing program modeled after Paint.NET. Its goal is to provide a simplified alternative to GIMP for casual users.',
+        pic: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Pinta-1-4-screenshot.png/220px-Pinta-1-4-screenshot.png'
     }
 ];
 
