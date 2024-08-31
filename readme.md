@@ -15,7 +15,7 @@ cd cloudlab
 ```
 
 3. Download the necessary dependencies using the script file-
-<br />
+
 a. if on linux or mac (Unix like systems)
 ```
 sudo chmod +x docker_images.sh
