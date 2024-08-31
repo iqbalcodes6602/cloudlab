@@ -50,6 +50,27 @@ const Login = ({ setUser, user, userDetails, setUserDetails }) => {
         }
     };
 
+    const handleLoginAsAdmin = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post('http://localhost:5000/api/users/login-as-admin')
+                .then((response) => {
+                    console.log(response.data);
+                    setUser(response.data);
+                    setUserDetails(jwtDecode(response.data));
+                    console.log(jwtDecode(response.data));
+                    localStorage.setItem('token', response.data);
+                })
+        } catch (error) {
+            console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Login failed",
+                description: error.response.data.message,
+            })
+        }
+    };
+
     return (
         <form onSubmit={handleLogin}>
             <Tabs defaultValue="signin" className="w-[375px]">
@@ -85,8 +106,9 @@ const Login = ({ setUser, user, userDetails, setUserDetails }) => {
                                 />
                             </div>
                         </CardContent>
-                        <CardFooter>
+                        <CardFooter className='flex justify-between'>
                             <Button type='submit'>Log In</Button>
+                            <Button variant='ghost' onClick={handleLoginAsAdmin}>Log In As Admin</Button>
                         </CardFooter>
                     </Card>
                 </TabsContent>

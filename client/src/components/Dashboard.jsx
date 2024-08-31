@@ -66,6 +66,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
     }, [user]);
 
     const startService = async (serviceName, image) => {
+        setLoading(true);
         try {
             const response = await axios.post('http://localhost:5000/api/services/start', { image, serviceName, user, });
             setServiceStates(prev => ({
@@ -87,6 +88,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
                 description: error.response.data.message,
             })
         }
+        setLoading(false);
     };
 
     const stopService = async (serviceName, image) => {
@@ -163,7 +165,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
                         <br />
                         Service Username: <strong className='text-gray-600'> kasm_user</strong>
                         <br />
-                        Service Password: <strong className='text-gray-600 italic'> [your username]_[your password] </strong>
+                        Service Password: <strong className='text-gray-600'> {userDetails.username}_{userDetails.password} </strong>
                         <br />
                         Example: If your username is 'john' and password is 'doe', then the service password will be 'john_doe'.
                     </p>
@@ -208,7 +210,10 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
                                                     Access Service
                                                 </a>
                                             ) : (
-                                                <span onClick={() => startService(service.name, service.image)} style={{ cursor: 'pointer' }}>Start</span>
+                                                loading ?
+                                                    <LoaderCircle className='animate-spin' />
+                                                    :
+                                                    <span onClick={() => startService(service.name, service.image)} style={{ cursor: 'pointer' }}>Start</span>
                                             )}
                                         </span>
                                         <p className="blog-text">{service.description}</p>

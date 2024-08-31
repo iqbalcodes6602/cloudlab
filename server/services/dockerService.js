@@ -131,6 +131,9 @@ const startContainer = async (image, serviceName, userId) => {
 
         return { container, hostPort, containerName, containerId }; // Return container details
     } catch (error) {
+        await User.findByIdAndUpdate(userId, {
+            $set: { running: false, serviceId: 'N/A' },
+        }, { new: true }).exec();
         console.error('Error starting container:', error);
         return { error: 'Failed to start container' };
     }

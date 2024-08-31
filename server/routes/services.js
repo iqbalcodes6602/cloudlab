@@ -84,7 +84,7 @@ router.post('/running', async (req, res) => {
 
 router.post('/start', async (req, res) => {
     const { image, serviceName, user } = req.body;
-    const userId = jwt.decode(user).userId
+    const userId = jwt.decode(user).userId;
 
     if (await isRunning(userId)) {
         return res.status(400).json({ message: 'Service already running.' });
@@ -97,21 +97,27 @@ router.post('/start', async (req, res) => {
                 { $set: { running: true } },
                 { new: true }
             ).exec();
-
         } catch (err) {
             // Handle error
             console.error(err);
         }
+
         const container = await dockerService.startContainer(image, serviceName, userId);
+
+        const { hostPort, containerName, containerId } = container;
+
+        if (!container || !hostPort || !containerName || !containerId) {
+            throw new Error('Problem starting service, missing container details.');
+        }
+
         res.status(200).json(container);
     } catch (error) {
         try {
             await User.findByIdAndUpdate(
                 userId,
-                { $set: { running: false, serviceId: 'N/A' }, },
+                { $set: { running: false, serviceId: 'N/A' } },
                 { new: true }
             ).exec();
-
         } catch (err) {
             // Handle error
             console.error(err);
