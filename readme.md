@@ -14,21 +14,21 @@ git clone https://github.com/iqbalcodes6602/cloudlab.git
 cd cloudlab
 ```
 
-3. Download the necessary dependencies using the script file-
+3. Download the necessary dependencies using the script file:
 
-a. if on linux or mac (Unix like systems)
-```
-sudo chmod +x docker_images.sh
-```
-```
-sudo ./docker_images.sh
-```
+   - If on Linux or Mac (Unix-like systems):
+     ```
+     sudo chmod +x docker_images.sh
+     ```
+     ```
+     sudo ./docker_images.sh
+     ```
 
-b. if on windows
+   - If on Windows:
+     ```
+     docker_images.bat
+     ```
 
-```
-docker_images.bat
-```
 
 4. Download the client dependencies
 ```
