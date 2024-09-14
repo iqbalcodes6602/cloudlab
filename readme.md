@@ -1,4 +1,11 @@
-## Installtion
+## Demo
+
+<video width="600" controls>
+  <source src="videos/demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+## Installation
 
 Run these commands in order to set up the project locally.
 
@@ -28,7 +35,6 @@ Run these commands in order to set up the project locally.
         ```
         docker_images.bat
         ```
-
 
 4. Download the client dependencies
     ```
@@ -62,4 +68,4 @@ Run these commands in order to set up the project locally.
     nodemon index.js
     ```
 
-7. Start by creating a account or login as admin.
+7. Start by creating an account or login as admin.
