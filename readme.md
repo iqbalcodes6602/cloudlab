@@ -1,9 +1,8 @@
 ## Demo
 
-<video width="600" controls>
-  <source src="videos/demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+
+https://github.com/user-attachments/assets/c24d1641-1193-470b-9b14-ac181c5542fc
+
 
 ## Installation
 
