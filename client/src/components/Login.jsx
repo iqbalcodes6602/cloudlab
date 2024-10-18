@@ -22,6 +22,7 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Button } from './ui/button';
 import { jwtDecode } from 'jwt-decode';
+import { backendUrl } from '../App';
 
 const Login = ({ setUser, user, userDetails, setUserDetails }) => {
     const { toast } = useToast()
@@ -32,7 +33,7 @@ const Login = ({ setUser, user, userDetails, setUserDetails }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/users/login', { username, password })
+            await axios.post(backendUrl + '/api/users/login', { username, password })
                 .then((response) => {
                     console.log(response.data);
                     setUser(response.data);
@@ -53,7 +54,7 @@ const Login = ({ setUser, user, userDetails, setUserDetails }) => {
     const handleLoginAsAdmin = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/users/login-as-admin')
+            await axios.post(backendUrl + '/api/users/login-as-admin')
                 .then((response) => {
                     console.log(response.data);
                     setUser(response.data);

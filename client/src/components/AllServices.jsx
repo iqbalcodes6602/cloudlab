@@ -3,13 +3,15 @@ import axios from 'axios';
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from './ui/table';
 import { formatDistanceToNow } from 'date-fns';
 import { LoaderCircle } from 'lucide-react';
+import { backendUrl } from '../App';
 
 function AllServices() {
     const [allServices, setAllServices] = useState([]);
     const [loading, setLoading] = useState(false);
 
+
     useEffect(() => {
-        axios.get('http://localhost:5000/api/services/running-services')
+        axios.get(backendUrl + '/api/services/running-services')
             .then(response => {
                 console.log(response.data);
                 setAllServices(response.data);
@@ -23,11 +25,11 @@ function AllServices() {
         setLoading(true);
         // alert(user);
         try {
-            await axios.post('http://localhost:5000/api/services/stop', { userId: user });
+            await axios.post(backendUrl + '/api/services/stop', { userId: user });
         } catch (error) {
             console.error('Error stopping service:', error);
         }
-        axios.get('http://localhost:5000/api/services/running-services')
+        axios.get(backendUrl + '/api/services/running-services')
             .then(response => {
                 console.log(response.data);
                 setAllServices(response.data);

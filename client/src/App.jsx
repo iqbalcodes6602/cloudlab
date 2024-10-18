@@ -7,6 +7,8 @@ import Dashboard from './components/Dashboard';
 import { Toaster } from './components/ui/toaster';
 import AdminDashboard from './components/AdminDashboard';
 
+export const backendUrl = 'http://localhost:5000';
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);

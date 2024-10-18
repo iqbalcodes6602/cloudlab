@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from './ui/table';
+import { backendUrl } from '../App';
 
 function AllUsers() {
     const [allUser, setAllUsers] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/users/all-users')
+        axios.get(backendUrl + '/api/users/all-users')
             .then(response => {
                 console.log(response.data);
                 setAllUsers(response.data);

@@ -15,6 +15,7 @@ import { useToast } from "./ui/use-toast"
 import HowItWorks from './HowItWorks';
 import { LoaderCircle } from 'lucide-react';
 import Footer from './Footer';
+import { backendUrl } from '../App';
 
 function Dashboard({ user, setUser, userDetails, setUserDetails }) {
     const { toast } = useToast()
@@ -26,7 +27,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/services');
+                const response = await axios.get(backendUrl + '/api/services');
                 setServices(response.data);
                 const initialStates = response.data.reduce((acc, service) => {
                     acc[service.image] = { buttonShow: false, port: 0 };
@@ -44,7 +45,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
     useEffect(() => {
         const isRunning = async () => {
             try {
-                const response = await axios.post('http://localhost:5000/api/services/running', { user });
+                const response = await axios.post(backendUrl + '/api/services/running', { user });
 
                 if (response.status === 200) {
                     setServiceStates(prev => ({
@@ -68,7 +69,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
     const startService = async (serviceName, image) => {
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/services/start', { image, serviceName, user, });
+            const response = await axios.post(backendUrl + '/api/services/start', { image, serviceName, user, });
             setServiceStates(prev => ({
                 ...prev,
                 [image]: { buttonShow: true, port: response.data.hostPort },
@@ -94,7 +95,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
     const stopService = async (serviceName, image) => {
         setLoading(true);
         try {
-            await axios.post('http://localhost:5000/api/services/stop', { userId: userDetails.userId });
+            await axios.post(backendUrl + '/api/services/stop', { userId: userDetails.userId });
             setServiceStates(prev => ({
                 ...prev,
                 [image]: { ...prev[image], buttonShow: false },
@@ -124,7 +125,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
         localStorage.removeItem('token');
 
         try {
-            await axios.post('http://localhost:5000/api/services/stop', { userId: user });
+            await axios.post(backendUrl + '/api/services/stop', { userId: user });
         } catch (error) {
             console.error('Error stopping service:', error);
         }
