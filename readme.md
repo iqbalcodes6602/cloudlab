@@ -127,5 +127,3 @@ We welcome contributions! If you’d like to help improve CloudLab:
 ## 📜 License
 
 CloudLab is licensed under the **MIT License** – feel free to use and modify it!
-
----
