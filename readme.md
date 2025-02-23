@@ -19,6 +19,9 @@ CloudLab is an open-source virtual workspace platform that provides seamless acc
 
 ## 📖 Architecture Overview
 
+![diagram-export-2-23-2025-5_58_03-PM](https://github.com/user-attachments/assets/d8f5138f-b044-4426-8682-b121a588647f)
+
+
 CloudLab follows a **MERN stack** architecture, using **Docker** for containerization and **Nginx** for reverse proxy management.
 
 ### 🔹 **Frontend (React)**
