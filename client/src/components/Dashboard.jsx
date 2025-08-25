@@ -50,7 +50,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
                 if (response.status === 200) {
                     setServiceStates(prev => ({
                         ...prev,
-                        [response.data.image]: { buttonShow: true, port: response.data.hostPort },
+                        [response.data.image]: { buttonShow: true, port: response.data.hostPort, host: response.data.host, url: response.data.url },
                     }));
                 }
             } catch (error) {
@@ -72,14 +72,14 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
             const response = await axios.post(backendUrl + '/api/services/start', { image, serviceName, user, });
             setServiceStates(prev => ({
                 ...prev,
-                [image]: { buttonShow: true, port: response.data.hostPort },
+                [image]: { buttonShow: true, port: response.data.hostPort, host: response.data.host, url: response.data.url },
             }));
             console.log(`Service ${serviceName} started.`);
             toast({
                 variant: "success",
                 title: serviceName + ' started successfully.',
                 description: "Access the service by clicking on the 'Access Service' button.",
-                action: <ToastAction altText="Access"><a className='' href={`https://localhost:${response.data.hostPort}`} target="_blank" rel="noopener noreferrer">Access Service</a></ToastAction>,
+                action: <ToastAction altText="Access"><a className='' href={`${response.data.url || ('http://' + (response.data.host || ('localhost:' + response.data.hostPort)))}` } target="_blank" rel="noopener noreferrer">Access Service</a></ToastAction>,
             })
         } catch (error) {
             console.log(`Failed to start service: ${error.response.data.message}`);
@@ -125,7 +125,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
         localStorage.removeItem('token');
 
         try {
-            await axios.post(backendUrl + '/api/services/stop', { userId: user });
+            await axios.post(backendUrl + '/api/services/stop', { userId: userDetails?.userId });
         } catch (error) {
             console.error('Error stopping service:', error);
         }
@@ -177,7 +177,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
                             {services.map(service => (
                                 serviceStates[service.image]?.buttonShow && (
                                     <div key={service.name} style={{ display: 'flex' }}>
-                                        <a className='bg-green-500' style={{ color: 'white', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', marginRight: '20px' }} href={`https://localhost:${serviceStates[service.image].port}`} target="_blank" rel="noopener noreferrer">
+                                        <a className='bg-green-500' style={{ color: 'white', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', marginRight: '20px' }} href={`http://${serviceStates[service.image].host || ('localhost:' + serviceStates[service.image].port)}`} target="_blank" rel="noopener noreferrer">
                                             Access {service.name}
                                         </a>
                                         <button style={{ backgroundColor: '#0077ff', color: 'white', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => stopService(service.name, service.image)}>
@@ -207,7 +207,7 @@ function Dashboard({ user, setUser, userDetails, setUserDetails }) {
                                         <span className="blog-link-btn" style={{ justifyContent: 'space-between', marginBottom: '10px' }}>
                                             <h3 className="blog-title">{service.name}</h3>
                                             {serviceStates[service.image]?.buttonShow ? (
-                                                <a href={`https://localhost:${serviceStates[service.image].port}`} target="_blank" rel="noopener noreferrer" className='text-green-500 cursor-pointer'>
+                                                <a href={`http://${serviceStates[service.image].host || ('localhost:' + serviceStates[service.image].port)}`} target="_blank" rel="noopener noreferrer" className='text-green-500 cursor-pointer'>
                                                     Access Service
                                                 </a>
                                             ) : (

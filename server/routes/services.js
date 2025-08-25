@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const dockerService = require('../services/dockerService');
+const { createWorkspace, deleteWorkspace } = require('../services/k8sOrchestrator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Service = require('../models/Service');
@@ -66,11 +67,15 @@ router.post('/running', async (req, res) => {
     // console.log(user)
     const userId = jwt.decode(user).userId;
 
-    if (isRunning(userId)) {
+    if (await isRunning(userId)) {
         try {
             const service = await Service.findOne({ owner: userId });
             if (service) {
-                return res.status(200).json({ message: 'Service already running.', image: service.image, hostPort: service.port });
+                let url;
+                if (service.host && service.containerName) {
+                    url = `http://${service.host}/${service.containerName}/`;
+                }
+                return res.status(200).json({ message: 'Service already running.', image: service.image, hostPort: service.port, host: service.host, url });
             } else {
                 return res.status(201).json({ message: 'Service not found.' });
             }
@@ -83,6 +88,7 @@ router.post('/running', async (req, res) => {
 });
 
 router.post('/start', async (req, res) => {
+    console.log(req.body)
     const { image, serviceName, user } = req.body;
     const userId = jwt.decode(user).userId;
 
@@ -102,15 +108,51 @@ router.post('/start', async (req, res) => {
             console.error(err);
         }
 
-        const container = await dockerService.startContainer(image, serviceName, userId);
+        const useK8s = process.env.ORCHESTRATOR === 'k8s';
+        if (useK8s) {
+            const name = `${serviceName.toLowerCase().replace(/\s+/g, '-')}-${userId.toString()}`;
+            const ingressDomain = process.env.INGRESS_BASE_DOMAIN || '127.0.0.1';
+            const ingressPort = process.env.INGRESS_PORT;
+            const containerPort = 6901;
+            const serviceType = process.env.K8S_SERVICE_TYPE || 'ingress';
+            const createResult = await createWorkspace({ name, image, containerPort, serviceType });
 
-        const { hostPort, containerName, containerId } = container;
+            let host;
+            let url;
+            if (serviceType === 'nodeport') {
+                // NodePort access directly via minikube ip or localhost (with tunnel)
+                const baseHost = ingressDomain;
+                host = `${baseHost}:${createResult.nodePort}`;
+                const scheme = process.env.KASM_SCHEME || 'https';
+                url = `${scheme}://${host}/`;
+            } else {
+                // Path-based ingress: base host with optional port, and path /<name>/
+                const baseHost = ingressPort ? `${ingressDomain}:${ingressPort}` : `${ingressDomain}`;
+                host = baseHost;
+                url = `http://${baseHost}/${name}/`;
+            }
+            const service = new Service({
+                owner: userId,
+                image,
+                serviceName,
+                containerName: name,
+                containerId: 'k8s',
+                port: containerPort,
+                host,
+                createdAt: new Date(),
+            });
+            await service.save();
 
-        if (!container || !hostPort || !containerName || !containerId) {
-            throw new Error('Problem starting service, missing container details.');
+            await User.findByIdAndUpdate(userId, { $set: { running: true, serviceId: service._id } }, { new: true }).exec();
+            return res.status(200).json({ hostPort: containerPort, containerName: name, containerId: 'k8s', host, url });
+        } else {
+            const container = await dockerService.startContainer(image, serviceName, userId);
+            const { hostPort, containerName, containerId } = container;
+            if (!container || !hostPort || !containerName || !containerId) {
+                throw new Error('Problem starting service, missing container details.');
+            }
+            return res.status(200).json(container);
         }
-
-        res.status(200).json(container);
     } catch (error) {
         try {
             await User.findByIdAndUpdate(
@@ -128,7 +170,6 @@ router.post('/start', async (req, res) => {
 
 router.post('/stop', async (req, res) => {
     const { userId } = req.body;
-    // const ownerId = jwt.decode(userId).userId
     const ownerId = userId
     try {
         // Find the user by userId
@@ -145,15 +186,20 @@ router.post('/stop', async (req, res) => {
         // Find the service by serviceId from the user schema
         const service = await Service.findById(user.serviceId);
         if (!service) {
-            // If service not found, set user's serviceId to 'N/A'
-            user.running = true;
+            // If service not found, mark as not running
+            user.running = false;
             user.serviceId = 'N/A';
             await user.save();
             return res.status(404).json({ message: 'Service not found.' });
         }
 
-        // Stop the container using the containerId from the service schema
-        await dockerService.stopContainer(service.containerId);
+        const useK8s = process.env.ORCHESTRATOR === 'k8s';
+        if (useK8s) {
+            await deleteWorkspace({ name: service.containerName });
+        } else {
+            // Stop the container using the containerId from the service schema
+            await dockerService.stopContainer(service.containerId);
+        }
 
         // Delete the service record
         await Service.findByIdAndDelete(service._id);
