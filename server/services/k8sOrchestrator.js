@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('yaml');
 const { KubeConfig, CoreV1Api, AppsV1Api, NetworkingV1Api } = require('@kubernetes/client-node');
+const User = require('../models/User');
 
 // Loads kubeconfig either from in-cluster or default location
 function createK8sClients() {
@@ -38,16 +39,18 @@ function readAndRenderTemplate(filePath, replacements) {
     return docs;
 }
 
-async function createWorkspace({ name, image, containerPort, serviceType = process.env.K8S_SERVICE_TYPE || 'ingress', namespace = process.env.K8S_NAMESPACE || 'default' }) {
+async function createWorkspace({ userId, name, image, containerPort, serviceType = process.env.K8S_SERVICE_TYPE || 'ingress', namespace = process.env.K8S_NAMESPACE || 'default' }) {
     const { coreV1Api, appsV1Api, networkingV1Api } = createK8sClients();
     const templatePath = path.join(__dirname, '..', 'k8s', serviceType === 'nodeport' ? 'service-nodeport.yaml' : 'service.yaml');
+    const user = await User.findById(userId).exec();
+    const servicePassword = `${user.username}_${user.password}`;
     const docs = readAndRenderTemplate(templatePath, {
         service_name: name,
         container_image: image,
         container_port: String(containerPort || 6901),
         ingress_class: process.env.INGRESS_CLASS || 'nginx',
         ingress_domain: process.env.INGRESS_BASE_DOMAIN || '127.0.0.1.nip.io',
-        service_password: process.env.DEFAULT_SERVICE_PASSWORD || 'changeme',
+        service_password: servicePassword,
     });
 
     for (const manifest of docs) {

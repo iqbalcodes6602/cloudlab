@@ -115,7 +115,7 @@ router.post('/start', async (req, res) => {
             const ingressPort = process.env.INGRESS_PORT;
             const containerPort = 6901;
             const serviceType = process.env.K8S_SERVICE_TYPE || 'ingress';
-            const createResult = await createWorkspace({ name, image, containerPort, serviceType });
+            const createResult = await createWorkspace({ userId, name, image, containerPort, serviceType });
 
             let host;
             let url;
