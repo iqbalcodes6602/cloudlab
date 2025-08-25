@@ -51,15 +51,14 @@ metadata:
   name: service_name
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: ingress_class
   rules:
-    - http:
+    - host: service_name.ingress_domain
+      http:
         paths:
-          - path: /service_name(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /
+            pathType: Prefix
             backend:
               service:
                 name: service_name

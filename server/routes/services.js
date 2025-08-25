@@ -83,7 +83,7 @@ router.post('/running', async (req, res) => {
             return res.status(500).json({ message: 'Internal server error.', error: error.message });
         }
     } else {
-        return res.status(400).json({ message: 'Service not running.' });
+        return res.status(201).json({ message: 'Service not running.' });
     }
 });
 
@@ -126,10 +126,12 @@ router.post('/start', async (req, res) => {
                 const scheme = process.env.KASM_SCHEME || 'https';
                 url = `${scheme}://${host}/`;
             } else {
-                // Path-based ingress: base host with optional port, and path /<name>/
-                const baseHost = ingressPort ? `${ingressDomain}:${ingressPort}` : `${ingressDomain}`;
-                host = baseHost;
-                url = `http://${baseHost}/${name}/`;
+                // Host-based ingress: <name>.<base-domain>[:port]/
+                const baseDomain = ingressDomain; // e.g. <minikube-ip>.nip.io
+                const fullHost = ingressPort ? `${name}.${baseDomain}:${ingressPort}` : `${name}.${baseDomain}`;
+                host = fullHost;
+                const scheme = process.env.KASM_SCHEME || 'http';
+                url = `${scheme}://${fullHost}/`;
             }
             const service = new Service({
                 owner: userId,
