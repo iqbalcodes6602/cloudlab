@@ -2,7 +2,6 @@
 
 const express = require('express');
 const router = express.Router();
-const dockerService = require('../services/dockerService');
 const { createWorkspace, deleteWorkspace } = require('../services/k8sOrchestrator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -108,53 +107,41 @@ router.post('/start', async (req, res) => {
             console.error(err);
         }
 
-        const useK8s = process.env.ORCHESTRATOR === 'k8s';
-        if (useK8s) {
-            const name = `${serviceName.toLowerCase().replace(/\s+/g, '-')}-${userId.toString()}`;
-            const ingressDomain = process.env.INGRESS_BASE_DOMAIN || '127.0.0.1';
-            const ingressPort = process.env.INGRESS_PORT;
-            const containerPort = 6901;
-            const serviceType = process.env.K8S_SERVICE_TYPE || 'ingress';
-            const createResult = await createWorkspace({ userId, name, image, containerPort, serviceType });
+        const name = `${serviceName.toLowerCase().replace(/\s+/g, '-')}-${userId.toString()}`;
+        const ingressDomain = process.env.INGRESS_BASE_DOMAIN || '127.0.0.1';
+        const ingressPort = process.env.INGRESS_PORT;
+        const containerPort = 6901;
+        const serviceType = process.env.K8S_SERVICE_TYPE || 'ingress';
+        const createResult = await createWorkspace({ userId, name, image, containerPort, serviceType });
 
-            let host;
-            let url;
-            if (serviceType === 'nodeport') {
-                // NodePort access directly via minikube ip or localhost (with tunnel)
-                const baseHost = ingressDomain;
-                host = `${baseHost}:${createResult.nodePort}`;
-                const scheme = process.env.KASM_SCHEME || 'https';
-                url = `${scheme}://${host}/`;
-            } else {
-                // Host-based ingress: <name>.<base-domain>[:port]/
-                const baseDomain = ingressDomain; // e.g. <minikube-ip>.nip.io
-                const fullHost = ingressPort ? `${name}.${baseDomain}:${ingressPort}` : `${name}.${baseDomain}`;
-                host = fullHost;
-                const scheme = process.env.KASM_SCHEME || 'http';
-                url = `${scheme}://${fullHost}/`;
-            }
-            const service = new Service({
-                owner: userId,
-                image,
-                serviceName,
-                containerName: name,
-                containerId: 'k8s',
-                port: containerPort,
-                host,
-                createdAt: new Date(),
-            });
-            await service.save();
-
-            await User.findByIdAndUpdate(userId, { $set: { running: true, serviceId: service._id } }, { new: true }).exec();
-            return res.status(200).json({ hostPort: containerPort, containerName: name, containerId: 'k8s', host, url });
+        let host;
+        let url;
+        if (serviceType === 'nodeport') {
+            const baseHost = ingressDomain;
+            host = `${baseHost}:${createResult.nodePort}`;
+            const scheme = process.env.KASM_SCHEME || 'https';
+            url = `${scheme}://${host}/`;
         } else {
-            const container = await dockerService.startContainer(image, serviceName, userId);
-            const { hostPort, containerName, containerId } = container;
-            if (!container || !hostPort || !containerName || !containerId) {
-                throw new Error('Problem starting service, missing container details.');
-            }
-            return res.status(200).json(container);
+            const baseDomain = ingressDomain; // e.g. <minikube-ip>.nip.io
+            const fullHost = ingressPort ? `${name}.${baseDomain}:${ingressPort}` : `${name}.${baseDomain}`;
+            host = fullHost;
+            const scheme = process.env.KASM_SCHEME || 'http';
+            url = `${scheme}://${fullHost}/`;
         }
+        const service = new Service({
+            owner: userId,
+            image,
+            serviceName,
+            containerName: name,
+            containerId: 'k8s',
+            port: containerPort,
+            host,
+            createdAt: new Date(),
+        });
+        await service.save();
+
+        await User.findByIdAndUpdate(userId, { $set: { running: true, serviceId: service._id } }, { new: true }).exec();
+        return res.status(200).json({ hostPort: containerPort, containerName: name, containerId: 'k8s', host, url });
     } catch (error) {
         try {
             await User.findByIdAndUpdate(
@@ -195,13 +182,7 @@ router.post('/stop', async (req, res) => {
             return res.status(404).json({ message: 'Service not found.' });
         }
 
-        const useK8s = process.env.ORCHESTRATOR === 'k8s';
-        if (useK8s) {
-            await deleteWorkspace({ name: service.containerName });
-        } else {
-            // Stop the container using the containerId from the service schema
-            await dockerService.stopContainer(service.containerId);
-        }
+        await deleteWorkspace({ name: service.containerName });
 
         // Delete the service record
         await Service.findByIdAndDelete(service._id);
