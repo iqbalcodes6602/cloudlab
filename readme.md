@@ -21,7 +21,7 @@ CloudLab is an open-source virtual workspace platform that provides seamless acc
 
 ![diagram-export-2-23-2025-6_11_07-PM](https://github.com/user-attachments/assets/987c8e5c-868f-4d88-b0a4-d5d5b46f4326)
 
-CloudLab follows a **MERN stack** architecture, using **Docker** for containerization and **Nginx** for reverse proxy management.
+CloudLab follows a **MERN stack** architecture, fully containerized and orchestrated by **Kubernetes**. It uses **Minikube** with the **QEMU driver** for local development and an **Nginx Ingress Controller** for handling external traffic.
 
 ### 🔹 **Frontend (React)**
 - Built with React to provide a seamless user experience.
@@ -30,25 +30,29 @@ CloudLab follows a **MERN stack** architecture, using **Docker** for containeriz
 
 ### 🔹 **Backend (Node.js & Express)**
 - Handles user authentication, file management, and workspace allocation.
+- Interacts with the **Kubernetes API** to create and manage workspace pods dynamically.
 - Secured using JWT-based authentication.
 
 ### 🔹 **Database (MongoDB)**
 - Stores user information, session details, and workspace configurations.
 - Ensures data persistence for ongoing sessions.
 
-### 🔹 **Containerization (Docker)**
-- Each workspace runs inside an **isolated Docker container**.
-- Preconfigured images for Ubuntu, OnlyOffice, and other tools.
-
-### 🔹 **Deployment**
-- Can be deployed on **AWS, DigitalOcean, or self-hosted servers**.
-- Uses **Docker Compose** to orchestrate multiple services.
+### 🔹 **Orchestration (Kubernetes & Minikube)**
+- Workspaces are deployed as isolated **Kubernetes Pods**.
+- **Ingress Controller** manages routing and access to specific workspaces.
+- Uses **Minikube** with **QEMU** for a lightweight local cluster.
 
 ---
 
 ## 🛠 Installation Guide
 
-Follow these steps to set up CloudLab on your local machine.
+Follow these steps to set up CloudLab on your local machine using Kubernetes.
+
+### **Prerequisites**
+- [Docker](https://www.docker.com/)
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [QEMU](https://www.qemu.org/) (required driver for Minikube)
 
 ### **1. Clone the repository**
 ```bash
@@ -56,47 +60,67 @@ git clone https://github.com/iqbalcodes6602/cloudlab.git
 cd cloudlab
 ```
 
-### **2. Install Dependencies**
-Run the setup script based on your operating system.
-
-#### **For Linux/Mac:**
+### **2. Start Minikube**
+Start the Minikube cluster using the QEMU driver:
 ```bash
-sudo chmod +x docker_images.sh
-sudo ./docker_images.sh
+minikube start --driver=qemu
 ```
 
-#### **For Windows:**
+### **3. Enable Ingress Controller**
+Enable the Nginx Ingress addon for traffic routing:
 ```bash
-docker_images.bat
+minikube addons enable ingress
 ```
 
-### **3. Install Client Dependencies**
+### **4. Configure Docker Environment & Pull Images**
+Configure your shell to use Minikube's Docker daemon, then pull the required images directly into the cluster.
+
+**For Linux/Mac:**
+```bash
+# Point shell to Minikube's Docker daemon
+eval $(minikube -p minikube docker-env)
+
+# Pull images
+chmod +x docker_images.sh
+./docker_images.sh
+```
+
+**For Windows (PowerShell):**
+```powershell
+# Point shell to Minikube's Docker daemon
+minikube -p minikube docker-env | Invoke-Expression
+
+# Pull images
+.\docker_images.bat
+```
+
+### **5. Install Client Dependencies**
 ```bash
 cd client
 npm install
 ```
 
-### **4. Install Server Dependencies**
+### **6. Install Server Dependencies**
 ```bash
 cd server
 npm install
 ```
 
-### **5. Start the Frontend**
+### **7. Start the Frontend**
 Runs on **http://localhost:3000/**
 ```bash
 cd client
 npm start
 ```
 
-### **6. Start the Backend**
-Runs on **http://localhost:5000/**
+### **8. Start the Backend**
+Runs on **http://localhost:5000/**. Ensure your `kubectl` context is set to Minikube.
 ```bash
 cd server
 nodemon index.js
 ```
 
-### **7. Login & Start Using**
+### **9. Login & Start Using**
 Create an account or log in as an **admin** to manage users and workspaces.
 
 ---
