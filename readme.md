@@ -29,7 +29,7 @@ CloudLab is an open-source virtual workspace platform that provides seamless acc
 
 ## Architecture Overview
 
-![diagram-export-2-23-2025-6_11_07-PM](https://github.com/user-attachments/assets/987c8e5c-868f-4d88-b0a4-d5d5b46f4326)
+![diagram](./assets/master%20flow-cropped.svg)
 
 CloudLab follows a **MERN stack** architecture, fully containerized and orchestrated by **Kubernetes**. It uses **Minikube** with the **QEMU driver** for local development and an **Nginx Ingress Controller** for handling external traffic.
 
